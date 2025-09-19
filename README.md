@@ -80,49 +80,48 @@ server.py
 import socket
 
 # Server setup
-host = '127.0.0.1'   # Localhost
-port = 5000          # Port number
+import socket
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind((host, port))
-server_socket.listen(1)
+# Create server socket
+server = socket.socket()
+server.bind(('127.0.0.1', 5000))
+server.listen(1)
 
-print("Server is listening on", host, ":", port)
-conn, addr = server_socket.accept()
-print("Connection from:", addr)
+print("Server waiting for connection...")
+conn, addr = server.accept()
+print("Connected by", addr)
 
 while True:
     data = conn.recv(1024).decode()
-    if not data:
+    if not data or data.lower() == "bye":
         break
     print("Client:", data)
-    message = input("Server: ")
-    conn.send(message.encode())
+    msg = input("Server: ")
+    conn.send(msg.encode())
 
 conn.close()
 
-client.py
-
+# Client setup
 import socket
 
-# Client setup
-host = '127.0.0.1'   # Same as server
-port = 5000
-
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host, port))
+# Create client socket
+client = socket.socket()
+client.connect(('127.0.0.1', 5000))
 
 while True:
-    message = input("Client: ")
-    client_socket.send(message.encode())
-    data = client_socket.recv(1024).decode()
+    msg = input("Client: ")
+    client.send(msg.encode())
+    if msg.lower() == "bye":
+        break
+    data = client.recv(1024).decode()
     print("Server:", data)
 
-client_socket.close()
+client.close()
 
 OUTPUT:
 
-<img width="1358" height="330" alt="image" src="https://github.com/user-attachments/assets/b889d913-608d-420e-b41e-64138c5005d5" />
+<img width="1225" height="333" alt="Screenshot 2025-09-19 154016" src="https://github.com/user-attachments/assets/d2a2c1d3-717c-436a-a6e5-7be732269e64" />
+
 
 ## Result:
 
